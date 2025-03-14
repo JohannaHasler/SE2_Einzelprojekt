@@ -37,7 +37,7 @@ class LeaderboardControllerTests {
         assertEquals(third, res[2])
     }
 
-    @Test
+    /*@Test
     fun test_getLeaderboard_sameScore_CorrectIdSorting() {
         val first = GameResult(1, "first", 20, 20.0)
         val second = GameResult(2, "second", 20, 10.0)
@@ -53,5 +53,43 @@ class LeaderboardControllerTests {
         assertEquals(second, res[1])
         assertEquals(third, res[2])
     }
+     */
+
+    @Test
+    fun test_getLeaderboard_sameScore_CorrectTimeSorting(){
+        val first = GameResult(1, "first", 15, 20.0)
+        val second = GameResult(2, "second", 15, 10.0)
+        val third = GameResult(3, "third", 15, 15.0)
+
+        whenever(mockedService.getGameResults()).thenReturn(listOf(second, first,third))
+
+        val res: List<GameResult> = controller.getLeaderboard()
+
+        verify(mockedService).getGameResults()
+        assertEquals(3, res.size)
+        assertEquals(second, res[0])  //kürzeste Zeit (10 Sekunden)
+        assertEquals(third, res[1])  // (15 Sekunden)
+        assertEquals(first, res[2])  //längste Zeit (20 Sekunden)
+    }
+
+    /*
+    @Test
+    fun test_getLeaderboard_sameScore_correctTimeSorting() {
+        val first = GameResult(1, "first", 20, 20.0)
+        val second = GameResult(2, "second", 20, 10.0)
+        val third = GameResult(3, "third", 20, 15.0)
+
+        whenever(mockedService.getGameResults()).thenReturn(listOf(second, first, third))
+
+        val res: List<GameResult> = controller.getLeaderboard()
+
+        verify(mockedService).getGameResults()
+        assertEquals(3, res.size)
+        assertEquals(second, res[0]) // Gleicher Score, aber kürzeste Zeit (10 Sek.)
+        assertEquals(third, res[1]) // Dann 15 Sek.
+        assertEquals(first, res[2]) // Längste Zeit (20 Sek.) zuletzt
+    }
+    
+     */
 
 }
